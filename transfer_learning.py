@@ -23,6 +23,9 @@ if not train_gen.class_indices:
 # Load ResNet50 with frozen base
 base_model = ResNet50(weights='imagenet', include_top=False, input_shape=image_shape)
 base_model.trainable = False
+#would it be better to use instead of resnet50 another model like alexnet? 
+
+# would using a optimizer for the batch and the layers from pooling and activation including batch increase the results output
 
 # Build the model
 model = models.Sequential([
@@ -47,7 +50,7 @@ history_frozen = model.fit(
     epochs=5,
     callbacks=[early_stopping]
 )
-
+#would batch size work better with it being auto optimized??
 # Save model weights after frozen base training
 model.save_weights("transfer_learning_frozen.weights.h5")
 
@@ -64,6 +67,9 @@ print("Transfer Learning Frozen Base Training Curves saved as transfer_learning_
 base_model.trainable = True
 for layer in base_model.layers[:-10]:  # Freeze all layers except the last 10
     layer.trainable = False
+
+#is it better to unfreeze the last 10 layers of the base model or is there a better method for fine tuning??
+
 
 model.compile(optimizer=SGD(learning_rate=1e-4, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 
