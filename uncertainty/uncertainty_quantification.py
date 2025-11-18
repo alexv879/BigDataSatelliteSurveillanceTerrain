@@ -13,7 +13,7 @@ from sklearn.covariance import EllipticEnvelope
 from sklearn.ensemble import IsolationForest
 
 
-class MonteCarlo Dropout:
+class MonteCarloDropout:
     """
     Estimate uncertainty using Monte Carlo Dropout
     """
