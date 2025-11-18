@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # Main application
+  terrain-classifier:
+    build:
+      context: .
+      target: production
+    image: satellite-terrain-classifier:latest
+    container_name: terrain-classifier
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # MLflow tracking server
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.8.0
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - ./mlartifacts:/mlartifacts
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:///mlruns/mlflow.db
+      --default-artifact-root /mlartifacts
+      --host 0.0.0.0
+      --port 5000
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # TensorBoard
+  tensorboard:
+    image: tensorflow/tensorflow:2.15.0
+    container_name: tensorboard
+    ports:
+      - "6006:6006"
+    volumes:
+      - ./logs:/logs
+    command: tensorboard --logdir=/logs --host=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Prometheus monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Grafana visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    networks:
+      - app-network
+    depends_on:
+      - prometheus
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:
