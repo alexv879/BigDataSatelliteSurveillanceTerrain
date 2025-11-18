@@ -1,0 +1,83 @@
+groups:
+  - name: terrain_classifier_alerts
+    interval: 30s
+    rules:
+      # High latency alert
+      - alert: HighInferenceLatency
+        expr: terrain_prediction_latency_seconds > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High inference latency detected"
+          description: "Inference latency is above 500ms for {{ $labels.instance }}"
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(terrain_prediction_errors_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High prediction error rate"
+          description: "Error rate is above 5% for {{ $labels.instance }}"
+
+      # Service down
+      - alert: ServiceDown
+        expr: up{job="terrain-classifier-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Terrain classifier API is down"
+          description: "Service {{ $labels.instance }} is unreachable"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Available memory is below 10% on {{ $labels.instance }}"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is above 80% on {{ $labels.instance }}"
+
+      # GPU high temperature
+      - alert: GPUHighTemperature
+        expr: DCGM_FI_DEV_GPU_TEMP > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GPU temperature high"
+          description: "GPU {{ $labels.gpu }} temperature is above 80°C"
+
+      # Low prediction confidence
+      - alert: LowPredictionConfidence
+        expr: avg(terrain_prediction_confidence) < 0.7
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low average prediction confidence"
+          description: "Average confidence is below 70%"
+
+      # Model drift detected
+      - alert: ModelDriftDetected
+        expr: abs(terrain_prediction_accuracy - terrain_baseline_accuracy) > 0.05
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Model drift detected"
+          description: "Accuracy has drifted by more than 5% from baseline"
