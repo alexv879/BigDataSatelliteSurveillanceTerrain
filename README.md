@@ -98,6 +98,13 @@ A **world-class, production-ready, research-level** satellite terrain surveillan
 ✅ **Automated Reporting** - HTML reports with maps
 ✅ **Foundation Models** - SAM + CLIP zero-shot classification
 
+### **Advanced Capabilities** ⭐ **LATEST**
+✅ **Advanced Preprocessing** - Pan-sharpening, radiometric calibration, atmospheric correction
+✅ **Domain Analysis** - Agriculture, disaster assessment, urban monitoring
+✅ **Feature Engineering** - Texture (GLCM, LBP, Gabor), 20+ spectral indices, OBIA
+✅ **Uncertainty Quantification** - MC Dropout, conformal prediction, OOD detection
+✅ **Semi-Supervised Learning** - Pseudo-labeling, Mean Teacher, MixMatch, weak supervision
+
 ### **Production API**
 ✅ FastAPI - High-performance async
 ✅ OpenAPI Docs - Auto-generated
