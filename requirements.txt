@@ -92,6 +92,9 @@ folium>=0.15.0
 # Post-processing
 pydensecrf>=1.0.2
 
+# Advanced Image Processing
+PyWavelets>=1.4.1  # Wavelet transforms for pan-sharpening
+
 # Foundation Models (Optional - PyTorch required)
 # segment-anything  # Install with: pip install git+https://github.com/facebookresearch/segment-anything.git
 # git+https://github.com/openai/CLIP.git  # Install with: pip install git+https://github.com/openai/CLIP.git
