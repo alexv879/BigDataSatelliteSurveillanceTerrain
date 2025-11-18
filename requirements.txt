@@ -14,6 +14,8 @@ pandas>=2.1.0
 opencv-python>=4.8.0
 albumentations>=1.3.1  # Advanced augmentation
 pillow>=10.0.0
+scipy>=1.11.0
+scikit-image>=0.22.0
 
 # Big Data
 pyspark>=3.5.0
@@ -81,6 +83,18 @@ safety>=2.3.0
 
 # Performance
 psutil>=5.9.0
+
+# Geospatial
+rasterio>=1.3.0
+pyproj>=3.6.0
+folium>=0.15.0
+
+# Post-processing
+pydensecrf>=1.0.2
+
+# Foundation Models (Optional - PyTorch required)
+# segment-anything  # Install with: pip install git+https://github.com/facebookresearch/segment-anything.git
+# git+https://github.com/openai/CLIP.git  # Install with: pip install git+https://github.com/openai/CLIP.git
 
 # Utilities
 tqdm>=4.66.0
