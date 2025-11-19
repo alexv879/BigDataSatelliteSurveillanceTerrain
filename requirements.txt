@@ -105,3 +105,12 @@ python-dotenv>=1.0.0
 rich>=13.7.0
 typer>=0.9.0
 click>=8.1.0
+
+# Security & Authentication
+python-jose[cryptography]>=3.3.0  # JWT tokens
+passlib[bcrypt]>=1.7.4  # Password hashing
+cryptography>=41.0.0  # Encryption for secrets
+python-magic>=0.4.27  # File type detection
+
+# Additional Security Dependencies
+pyyaml>=6.0  # Already included but essential for config

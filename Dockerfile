@@ -66,6 +66,10 @@ COPY models/ /app/models/
 COPY api/ /app/api/
 COPY interpretability/ /app/interpretability/
 COPY config/ /app/config/
+COPY security/ /app/security/
+COPY utils/ /app/utils/
+COPY main.py /app/
+COPY setup.py /app/
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \
@@ -80,10 +84,11 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Expose API port
 EXPOSE 8000
 
-# Production command with optimized settings
-CMD ["uvicorn", "api.serve:app", \
+# Production command with security and optimization
+CMD ["uvicorn", "api.serve_secure:app", \
      "--host", "0.0.0.0", \
      "--port", "8000", \
-     "--workers", "4", \
+     "--workers", "1", \
      "--limit-concurrency", "100", \
-     "--timeout-keep-alive", "30"]
+     "--timeout-keep-alive", "30", \
+     "--access-log"]
